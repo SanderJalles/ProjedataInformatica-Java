@@ -1,17 +1,20 @@
 package desafio;
 
 import desafio.model.Funcionario;
+import desafio.model.Pessoa;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.Collections;
 
 public class Main {
 
@@ -68,5 +71,28 @@ public class Main {
         funcionarios.stream()
                 .filter(f -> f.getDataNascimento().getMonthValue() == 10 || f.getDataNascimento().getMonthValue() == 12)
                 .forEach(f -> System.out.println(f.getNome() + " - " + f.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM"))));
+
+
+        Funcionario maisVelho = Collections.min(funcionarios, Comparator.comparing(Pessoa::getDataNascimento));
+        int idade = Period.between(maisVelho.getDataNascimento(), LocalDate.now()).getYears();
+        System.out.println("\n>>> FUNCIONÁRIO COM MAIOR IDADE");
+        System.out.println("Nome: " + maisVelho.getNome() + " | Idade: " + idade + " anos");
+
+        System.out.println("\n>>> LISTA POR ORDEM ALFABÉTICA");
+        funcionarios.stream()
+                .sorted(Comparator.comparing(Pessoa::getNome))
+                .forEach(f -> System.out.println(f.getNome()));
+
+        BigDecimal totalSalarios = funcionarios.stream()
+                .map(Funcionario::getSalario)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        System.out.println("\nTOTAL DOS SALÁRIOS: " + df.format(totalSalarios));
+
+        BigDecimal valorSalarioMinimo = new BigDecimal("1212.00");
+        System.out.println("\n>>> EQUIVALÊNCIA EM SALÁRIOS MÍNIMOS");
+        for (Funcionario f : funcionarios) {
+            BigDecimal qtdMinimos = f.getSalario().divide(valorSalarioMinimo, 2, RoundingMode.HALF_UP);
+            System.out.println(String.format("%-10s ganha %s salários mínimos.", f.getNome(), qtdMinimos));
+        }
     }
 }
