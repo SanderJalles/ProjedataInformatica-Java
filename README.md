@@ -2,7 +2,7 @@
 Projeto desenvolvido para o teste prático de programação Java.
 
 ## Tecnologias
-- Java 17+ (ou a sua versão)
+- Java 17+ 
 - Maven
 - Stream API
 
